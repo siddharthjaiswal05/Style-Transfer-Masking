@@ -1,0 +1,2 @@
+seg_models/yolo11l-seg.pt filter=lfs diff=lfs merge=lfs -text
+seg_models/yolov11l_dress_segment_model.pt filter=lfs diff=lfs merge=lfs -text
