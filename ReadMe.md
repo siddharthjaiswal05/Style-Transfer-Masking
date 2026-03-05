@@ -13,7 +13,6 @@
 - [Implementation Details](#implementation-details)
 - [References](#references)
 
----
 
 ## Overview
 
@@ -129,20 +128,17 @@ Each mode uses a binary mask produced by the segmentation model to determine whi
   </tr>
 </table>
 
----
 
 ## Model Architecture
 
 This section explains the two main components of the system — the VGG19-based style transfer network and the YOLO segmentation model — and how they work together.
 
-### 1. VGG19 for Style Transfer
+### VGG19 for Style Transfer
 
 VGG19 is a convolutional neural network originally trained on the ImageNet dataset for image classification. It has 19 layers — 16 convolutional layers and 3 fully connected layers. In this project, it is not used for classification. Instead, it is used as a fixed feature extractor, meaning its weights are not updated during the style transfer process.
-
-**Why VGG19?**  
+  
 Convolutional layers in a deep network learn to detect increasingly abstract features. Early layers respond to low-level patterns like edges and colors, while deeper layers capture high-level structures like shapes and objects. This property makes VGG19 useful for separating "content" (what is in the image) from "style" (how it looks in terms of texture and color patterns).
 
-**Content Representation:**  
 The content of an image is captured using the activations from a deep convolutional layer, specifically `block4_conv2` in VGG19. At this depth, the network has encoded the structural layout of the image — positions of objects, overall composition — without holding onto fine pixel-level details. The content loss is the mean squared difference between the feature maps of the generated image and the content image at this layer.
 
 **Style Representation:**  
@@ -159,13 +155,12 @@ Total Loss = alpha * Content Loss + beta * Style Loss
 
 The weights `alpha` and `beta` control how much content versus style is preserved. A higher `beta/alpha` ratio results in stronger stylization.
 
----
 
-### 2. YOLO Segmentation for Masking
+### YOLO Segmentation for Masking
 
 YOLO (You Only Look Once) is a real-time object detection and segmentation model. In this project, the YOLOv11 segmentation variant is used to generate pixel-level binary masks for different regions of the image.
 
-**How YOLO Segmentation Works:**  
+**YOLO Segmentation:**  
 Unlike standard object detection that produces bounding boxes, segmentation models output a mask for each detected object. Each mask is a binary image of the same size as the input, where pixels belonging to the detected region are marked as 1 and all other pixels are 0.
 
 Two separate YOLO models are used in this project:
@@ -184,7 +179,6 @@ output_pixel = mask * original_pixel + (1 - mask) * styled_pixel
 
 This simple but effective combination step is what enables selective style transfer without visible artifacts at region boundaries.
 
----
 
 ## Implementation Details
 
@@ -208,7 +202,6 @@ style_transfer_masking/
 5. After optimization, apply the binary mask to blend the styled result with the original image.
 6. Save the final output to the `outputs/` folder. Optionally save the segmentation mask if `--save_seg` is set.
 
----
 
 ## References
 
@@ -216,4 +209,3 @@ style_transfer_masking/
 - [Style Transfer Reference Implementation](https://github.com/superb20/Image-Style-Transfer-Using-Convolutional-Neural-Networks?tab=readme-ov-file) — used as reference for coding the style transfer algorithm.
 - [Ultralytics YOLOv11 Documentation](https://github.com/ultralytics/ultralytics) — used for training the custom clothing segmentation model.
 
----
